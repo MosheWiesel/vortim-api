@@ -1,7 +1,9 @@
-"""
-app.py — נקודת הכניסה של השרת.
-כאן מגדירים את אפליקציית Flask ואת כל ה-routes.
-פונקציות העזר לא נכתבות כאן — הן נמצאות ב-helpers.py ומיובאות לכאן.
+from flask import Flask
+import requests
+app = Flask(__name__)
 
-בנה את הקובץ הזה לפי ההנחיות במסמכי docs/, שלב אחר שלב.
-"""
+@app.route("/")
+def status():
+    return { "status": "server is running" } , 200
+if __name__ == "__main__":
+    app.run(debug=True)
