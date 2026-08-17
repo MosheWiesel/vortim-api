@@ -1,3 +1,4 @@
+from helpers import *
 from flask import Flask
 import requests
 app = Flask(__name__)
@@ -14,27 +15,13 @@ def parshiot():
 
 @app.route("/parshiot/<parsha>/vortim")
 def vortim(parsha):
-    return {
-  "vortim": [
-    {
-      "id": 1,
-      "title": "כוחה של התחלה",
-      "text": "רעיון קצר על משמעות ההתחלה בפרשה."
-    },
-    {
-      "id": 2,
-      "title": "אמונה ובחירה",
-      "text": "רעיון קצר נוסף על המסר המרכזי של הפרשה."
-    }
-  ]
-} , 200
+    vortim = load_vortim_for_parsha(parsha)
+    return vortim
 @app.route("/parshiot/<parsha>/vortim/<vort_id>")
 def vort(parsha , vort_id):
-    return {
-  "id": 1,
-  "title": "כוחה של התחלה",
-  "text": "כל התחלה חדשה דורשת החלטה לעשות את הצעד הראשון."
-} , 200
+    vort = load_single_vort(parsha , vort_id)
+    is_long_vort = is_long(parsha , vort_id)
+    return vort , "/n is long vort : " , is_long_vort
 @app.route("/current")
 def current():
     return {
