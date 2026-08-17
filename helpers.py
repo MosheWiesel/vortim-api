@@ -8,10 +8,17 @@ from config import *
 BASE_DIR = Path(__file__).parent
 USERS_FILE = BASE_DIR / "data" / "users.json"
 ADMINS_FILE = BASE_DIR / "data" / "admins.json"
+PARSIOT_DIR = BASE_DIR / "data" / "parshiot"
 
 class VortNotFoundError(Exception):
     pass
-
+def how_meny_vortim(parash):
+    folder = PARSIOT_DIR / parash
+    num = 0
+    for file in folder.glob("*.json"):
+        num += 1
+    return num
+   
 def load_vortim_for_parsha(parsha_name):
   folder = Path("data/parshiot") / parsha_name 
   if not folder.is_dir():
@@ -23,8 +30,9 @@ def load_vortim_for_parsha(parsha_name):
          vort = json.load(f)
          vort["is_long"] = is_long(vort["text"])
          vortim.append(vort)
+
     except FileNotFoundError:
-        return {"error": "File not found"}, 404
+        return {"error": "File not found"}
   return vortim
 
 def load_single_vort(parsha_name, vort_id):
@@ -92,3 +100,21 @@ def load_admins():
 def check_admin (username):
     admins = load_admins()
     return username in admins
+
+def check_parsha_exsist(parsha):
+    parsha_path = PARSIOT_DIR / parsha
+    return parsha_path.is_dir()
+   
+
+def validate_vort(data):
+  if not isinstance(data, dict):
+    return "Invalid JSON object"
+  if not (all(key in data for key in ["title", "author", "text"])):
+    return "MissingFields"
+  for key , item in data.items():
+    if not isinstance(key , str) or not isinstance(item, str) or key.strip() == "" or item.strip() == "":
+      return "FieldsAreWrong"
+  if not (3 <= len(data["title"]) <= 100) or not (20 <= len(data["text"]) <= 1000000):
+    return "FieldsAreWrong"
+  return data
+  

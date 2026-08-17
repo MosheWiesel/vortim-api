@@ -89,7 +89,36 @@ def login ():
     if not verify_password(password , saved_hash):
         return f"wrong password" , 401
     else:
-        return create_token(username)
+        return {"token": create_token(username)}, 200
+
+@app.route("/parshiot/<parsha>/vortim" , methods = ["POST"])
+def add_vort(parsha):
+    if not check_parsha_exsist(parsha):
+        return "ParshaNotExsist" , 400
+    token = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        token = auth_header.split(" ")[1]
+    else:
+        return "eroor" , 401
+    username = decode_token(token)
+    if not username:
+        return {"error": "Unauthorized"}, 401
+    if not check_admin(username):
+        return {"error": "Forbidden"}, 403
+    else:
+        vort_new =  validate_vort(data = request.get_json())
+        if isinstance(vort_new , str):
+            return {"error": vort_new}, 400
+        number = how_meny_vortim(parsha) + 1
+        vort_new["id"] = f"vort_{number:02d}"
+        new_file = PARSIOT_DIR / parsha / f"{vort_new['id']}.json"
+        with open(new_file , "w" , encoding="utf-8") as file:
+             json.dump(vort_new, file)
+        return vort_new , 201
+
+
+
 
 
 app.run(debug=True , port=5000)
