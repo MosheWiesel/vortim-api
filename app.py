@@ -1,4 +1,5 @@
 from helpers import *
+from config import *
 from flask import Flask
 import requests
 app = Flask(__name__)
@@ -25,8 +26,10 @@ def vort(parsha , vort_id):
         return {"error": "Vort not found"}, 404
 @app.route("/current")
 def current():
-    return {
-  "current": "ecev"
-} , 200
+    return get_current_parsha() , 200
+
+@app.route("/current/vortim")
+def current_vortim():
+    return load_vortim_for_parsha(get_current_parsha())
 
 app.run(debug=True , port=5000)
