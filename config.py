@@ -1,5 +1,7 @@
 from pyluach import dates, parshios
 
+JWT_SECRET_KEY = "my_secret_key_is_invisble_123456"
+
 PARSHIOT_HEB_TO_ENG_SORTED = {
     'אחרי מות': 'achrei_mot',
     'אמור': 'emor',
@@ -59,7 +61,7 @@ PARSHIOT_HEB_TO_ENG_SORTED = {
 def get_current_parsha():
     today = dates.HebrewDate.today()
     parsha = parshios.getparsha_string(today, israel=True, hebrew=True)
-    print (PARSHIOT_HEB_TO_ENG_SORTED[parsha])
+    #print (PARSHIOT_HEB_TO_ENG_SORTED[parsha])
     return PARSHIOT_HEB_TO_ENG_SORTED[parsha]
 
-get_current_parsha()
+#get_current_parsha()
