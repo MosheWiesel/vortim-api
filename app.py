@@ -19,13 +19,14 @@ def vortim(parsha):
     return vortim
 @app.route("/parshiot/<parsha>/vortim/<vort_id>")
 def vort(parsha , vort_id):
-    vort = load_single_vort(parsha , vort_id)
-    is_long_vort = is_long(parsha , vort_id)
-    return vort , "/n is long vort : " , is_long_vort
+    try:
+        return load_single_vort(parsha , vort_id)
+    except VortNotFoundError:
+        return {"error": "Vort not found"}, 404
 @app.route("/current")
 def current():
     return {
   "current": "ecev"
 } , 200
 
-app.run(debug=True)
+app.run(debug=True , port=5000)

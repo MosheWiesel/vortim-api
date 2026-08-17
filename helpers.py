@@ -11,10 +11,12 @@ def load_vortim_for_parsha(parsha_name):
   for file in folder.glob("*.json"):
     try:
       with open(file , "r" , encoding="utf-8") as f:
-         vortim.append(json.load(f))
+         vort = json.load(f)
+         vort["is_long"] = is_long(vort["text"])
+         vortim.append(vort)
     except FileNotFoundError:
         return {"error": "File not found"}, 404
-  return {"vortim" : vortim} , 200
+  return vortim , 200
 
 def load_single_vort(parsha_name, vort_id):
   folder = Path("data/parshiot") / parsha_name
@@ -23,12 +25,12 @@ def load_single_vort(parsha_name, vort_id):
   for file in folder.glob("*.json"):
     try:
       with open (file , "r" , encoding="utf-8") as f:
-         vortim = json.load(f)
+         vort = json.load(f)
     except FileNotFoundError:
           return {"error": "File not found"} , 404
-    for vort in vortim:
-      if vort["id"] == vort_id:
-        return vort
+    if vort["id"] == vort_id:
+      vort["is_long"] = is_long(vort["text"])
+      return vort
   raise VortNotFoundError ("Vort not found")
 def is_long(text):
   list_text = text.split("\n")
